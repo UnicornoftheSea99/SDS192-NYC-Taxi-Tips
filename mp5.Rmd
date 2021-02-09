@@ -1,5 +1,5 @@
 ---
-title: "Put a real title here"
+title: "Querying Film Data in SQL"
 subtitle: "SDS 192: MP5"
 author: 
 - name: Emily Rhyu
@@ -44,7 +44,7 @@ db <- dbConnect(
   host = "scidb.smith.edu", 
   user = "sds192", 
   password = "DSismfc@S", 
-  dbname = "airlines"
+  dbname = "imdb"
 )
 knitr::opts_chunk$set(
   message = FALSE,
@@ -53,7 +53,6 @@ knitr::opts_chunk$set(
   max.print = 20
 )
 ```
-
 
 ## Introduction
 
@@ -65,7 +64,7 @@ What is this article about? [^github]
 
 Make sure that you can get this chunk to run:
 
-```{sql}
+```{sql connection = db, output.var = "type"}
 SHOW DATABASES;
 ```
 
