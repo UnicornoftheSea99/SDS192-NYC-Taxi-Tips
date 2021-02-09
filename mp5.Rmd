@@ -44,7 +44,7 @@ db <- dbConnect(
   host = "scidb.smith.edu", 
   user = "sds192", 
   password = "DSismfc@S", 
-  dbname = "airlines"
+  dbname = "nyctaxi"
 )
 knitr::opts_chunk$set(
   message = FALSE,
@@ -74,14 +74,32 @@ Note always how the results come directly back into R and show up in the HTML ou
 
 If you want to save the results of your query as a data frame, so that you can use it in any later R chunks, add the `connection` and `output.var` chunk options, like this:
 
-```{sql, connection=db, output.var="first_ten_airports"}
-SELECT * FROM airports LIMIT 10;
+```{sql, connection=db, output.var="tables"}
+SHOW TABLES;
+```
+
+```{sql, connection=db, output.var="yellow"}
+DESCRIBE yellow;
+```
+
+```{sql, connection=db, output.var="yellowsum"}
+DESCRIBE yellow_sum;
+```
+
+```{sql, connection=db, output.var="yellowoldsum"}
+/*DESCRIBE yellow_old_sum;*/
+```
+
+
+```{sql, connection=db, output.var="first_ten_yellow"}
+SELECT * FROM yellow LIMIT 10;
 ```
 
 Now we have this object in R:
 
 ```{r}
-first_ten_airports
+first_ten_yellow
+
 ```
 
 Please see the [SQL chapter of the `bookdown` book](
@@ -90,13 +108,13 @@ https://rmarkdown.rstudio.com/authoring_knitr_engines.html%23sql#sql) for more i
 You can cite references using parentheses or not. @xie2016bookdown wrote about this. See also [@xie2016bookdown].
 
 ```{r airport-map, fig.cap="Map of the first ten airports."}
-library(leaflet)
-leaflet() %>%
-  addTiles() %>%
-  addMarkers(
-    data = first_ten_airports,
-    popup = ~name
-  )
+# library(leaflet)
+# leaflet() %>%
+#   addTiles() %>%
+#   addMarkers(
+#     data = first_ten_airports,
+#     popup = ~name
+#   )
 ```
 
 
@@ -104,13 +122,6 @@ leaflet() %>%
 
 ```{r}
 flights <- tbl(db, "flights")
-```
-
-
-```{r}
-
-#does this work
-
 ```
 
 
