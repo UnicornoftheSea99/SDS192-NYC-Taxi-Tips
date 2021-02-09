@@ -65,7 +65,7 @@ What is this article about? [^github]
 
 Make sure that you can get this chunk to run:
 
-```{sql}
+```{sql, connection=db, output.var="databases"}
 SHOW DATABASES;
 ```
 
