@@ -91,8 +91,11 @@ DESCRIBE yellow_sum;
 ```
 
 
-```{sql, connection=db, output.var="first_ten_yellow"}
-SELECT * FROM yellow LIMIT 10;
+```{sql, connection=db, output.var="first_hundred_yellow"}
+/*SELECT trip_distance, passenger_count, fare_amount, tip_amount, total_amount*/
+SELECT *
+FROM yellow 
+LIMIT 100;
 ```
 
 Now we have this object in R:
