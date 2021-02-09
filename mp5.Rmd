@@ -6,7 +6,7 @@ author:
   affiliation: Smith College
 - name: Kitty Chen 
   affiliation: Smith College
-- name: Ale Munoz 
+- name: Ale Munoz Garcia
   affiliation: Smith College
 date: "`r format(Sys.Date(), '%B %e, %Y')`"
 output: 
@@ -107,7 +107,11 @@ flights <- tbl(db, "flights")
 ```
 
 
+```{r}
 
+#does this work
+
+```
 
 
 ## Analysis
