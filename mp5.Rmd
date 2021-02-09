@@ -6,7 +6,7 @@ author:
   affiliation: Smith College
 - name: Kitty Chen 
   affiliation: Smith College
-- name: Ale Munoz 
+- name: Ale Munoz Garcia
   affiliation: Smith College
 date: "`r format(Sys.Date(), '%B %e, %Y')`"
 output: 
@@ -44,7 +44,7 @@ db <- dbConnect(
   host = "scidb.smith.edu", 
   user = "sds192", 
   password = "DSismfc@S", 
-  dbname = "imdb"
+  dbname = "nyctaxi"
 )
 knitr::opts_chunk$set(
   message = FALSE,
@@ -64,23 +64,19 @@ What is this article about? [^github]
 
 Make sure that you can get this chunk to run:
 
-```{sql connection = db, output.var = "type"}
+```{sql, connection = db, output.var="databases"}
 SHOW DATABASES;
 ```
 
-Note how the chunk has the engine type `sql` instead of `r`. 
-Note always how the results come directly back into R and show up in the HTML output. 
-
-If you want to save the results of your query as a data frame, so that you can use it in any later R chunks, add the `connection` and `output.var` chunk options, like this:
-
-```{sql, connection=db, output.var="first_ten_airports"}
-SELECT * FROM airports LIMIT 10;
+```{sql, connection = db, output.var="table"}
+SHOW TABLES;
 ```
 
 Now we have this object in R:
 
 ```{r}
-first_ten_airports
+databases
+table
 ```
 
 Please see the [SQL chapter of the `bookdown` book](
@@ -104,10 +100,6 @@ leaflet() %>%
 ```{r}
 flights <- tbl(db, "flights")
 ```
-
-
-
-
 
 ## Analysis
 
