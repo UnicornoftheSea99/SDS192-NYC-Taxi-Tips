@@ -4,7 +4,9 @@ subtitle: "SDS 192: MP5"
 author: 
 - name: Emily Rhyu
   affiliation: Smith College
-- name: Author Two
+- name: Kitty Chen 
+  affiliation: Smith College
+- name: Ale Munoz 
   affiliation: Smith College
 date: "`r format(Sys.Date(), '%B %e, %Y')`"
 output: 
