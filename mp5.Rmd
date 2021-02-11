@@ -147,7 +147,6 @@ list.files(dsn)
 ```
 
 ```{r}
-#st_layers(dsn)
 taxi_zone_look <- read_sf(dsn)
 taxi_zone_look
 ```
@@ -155,17 +154,20 @@ taxi_zone_look
 
 ```{r}
 #shows all the taxi zones in nyc
+#want it by burough
+
 taxi_zone_look %>%
   st_geometry() %>%
   plot(col = gray.colors(nrow(taxi_zone_look)))
 ```
 ```{r}
+#zooms to correct area but want it to be colored by burough
 library(leaflet)
 leaflet() %>%
   addTiles() %>%
   addPolygons(
     data = taxi_zone_look,
-    #popup = ~name
+    fill = ~borough,
   )%>%
    setView(lng = -74, lat = 40.66, zoom = 10)
 ```
