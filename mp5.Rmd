@@ -84,6 +84,10 @@ DESCRIBE yellow_sum;
 
 ```{sql, connection=db}
 /*DESCRIBE yellow_old_sum;*/
+
+SELECT * 
+FROM yellow_old_sum
+LIMIT 10;
 ```
 
 ```{sql, connection=db, output.var="first_ten_yellow"}
@@ -108,6 +112,7 @@ Now we have this object in R:
 
 ```{r}
 tables
+yellow
 yellowsum
 first_ten_yellow
 total_amount_1k
@@ -115,11 +120,23 @@ passenger_count
 ```
 
 ```{sql connection=db}
-SELECT tpep_dropoff_datetime, total_amount, tip_amount, passenger_count, trip_distance
+SELECT  tpep_dropoff_datetime, payment_type, total_amount, tip_amount, passenger_count, trip_distance
 FROM yellow
-WHERE passenger_count > 2 
-  AND total_amount > 10
-ORDER BY desc(trip_distance)
+WHERE passenger_count <= 2 
+  AND total_amount < 80 
+  AND tip_amount > 0
+  AND payment_type = 2
+ORDER BY trip_distance DESC
+LIMIT 10;
+```
+```{sql connection = db, output.var = "payment_cc"}
+SELECT  tpep_dropoff_datetime, payment_type, total_amount, tip_amount, passenger_count, trip_distance
+FROM yellow
+WHERE passenger_count <= 2 
+  AND total_amount < 80 
+  AND tip_amount > 0
+  AND payment_type = 1
+ORDER BY trip_distance DESC
 LIMIT 10;
 ```
 
