@@ -205,7 +205,7 @@ LIMIT 10;
 
 #Both Types of Payment
 ```{sql connection = db, output.var = "payment"}
-SELECT  tpep_dropoff_datetime, passenger_count, trip_distance, payment_type, total_amount, tip_amount, (tip_amount/total_amount)*100 AS tip_percent
+SELECT  tpep_dropoff_datetime, PULocationID, passenger_count, trip_distance, payment_type, total_amount, tip_amount, (tip_amount/total_amount)*100 AS tip_percent
 FROM yellow
 WHERE passenger_count < 4
   AND total_amount < 80 
@@ -232,6 +232,19 @@ UPDATE payment
 payment_cc
 payment
 ```
+
+```{r}
+payments_join <- payment %>%
+  inner_join(taxi_zones2, by=c("PULocationID" = "LocationID"))
+
+tip_by_borough <- payments_join %>%
+  group_by(Borough)%>%
+  summarize(
+    N = n(),
+    average = mean(tip_percent)
+  )
+```
+
 
 Please see the [SQL chapter of the `bookdown` book](
 https://rmarkdown.rstudio.com/authoring_knitr_engines.html%23sql#sql) for more information. 
