@@ -79,9 +79,6 @@ DESCRIBE yellow_sum;
 ```
 
 #Emily Attempts
-```{r}
-taxi_zones2 <- read_csv("taxi+_zone_lookup.csv")
-```
 
 ```{sql connection=taxidb}
 /*
@@ -133,6 +130,9 @@ LINES TERMINATED BY '\n'
 IGNORE 1 ROWS;
 ```
 
+```{r}
+taxi_zones2 <- read_csv("taxi+_zone_lookup.csv")
+```
 
 ```{sql, connection=db, output.var="first_hundred_yellow"}
 SELECT 
@@ -179,6 +179,7 @@ total_amount_1k
 passenger_count
 ```
 
+#Cash
 ```{sql connection=db}
 SELECT  tpep_dropoff_datetime, payment_type, total_amount, tip_amount, passenger_count, trip_distance
 FROM yellow
@@ -190,6 +191,7 @@ ORDER BY trip_distance desc
 LIMIT 10;
 ```
 
+#Credit
 ```{sql connection = db, output.var = "payment_cc"}
 SELECT  tpep_dropoff_datetime, total_amount, tip_amount, passenger_count, trip_distance
 FROM yellow
@@ -201,8 +203,34 @@ ORDER BY trip_distance desc
 LIMIT 10;
 ```
 
+#Both Types of Payment
+```{sql connection = db, output.var = "payment"}
+SELECT  tpep_dropoff_datetime, passenger_count, trip_distance, payment_type, total_amount, tip_amount, (tip_amount/total_amount)*100 AS tip_percent
+FROM yellow
+WHERE passenger_count < 4
+  AND total_amount < 80 
+  AND tip_amount > 0
+ORDER BY trip_distance desc
+LIMIT 10;
+
+```
+
+#Doesn't Work
+```{sql connection = db}
+/*
+UPDATE payment
+  SET payment_type = 'Credit' 
+  WHERE payment_type = 1;
+  */
+  
+ALTER TABLE payment
+  ADD tip_percent int NOT NULL
+    AFTER tip_amount;
+```
+
 ```{r}
 payment_cc
+payment
 ```
 
 Please see the [SQL chapter of the `bookdown` book](
