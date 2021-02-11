@@ -91,30 +91,35 @@ DESCRIBE yellow_sum;
 SELECT * FROM yellow LIMIT 10;
 ```
 
-```{sql connection = db, output.var = "total_amount"}
-SELECT *
-FROM total_amount;
+```{sql connection = db, output.var = "total_amount_1k"}
+SELECT total_amount
+FROM yellow
+LIMIT 100;
 ```
 
 ```{sql connection = db, output.var = "passenger_count"}
-
+SELECT passenger_count
+FROM yellow
+LIMIT 100;
 ```
 
 Now we have this object in R:
 
 ```{r}
 tables
+yellowsum
 first_ten_yellow
+total_amount_1k
+passenger_count
 ```
 
 ```{sql connection=db}
-
-SELECT total_amount, tip_amount
+SELECT tpep_dropoff_datetime, total_amount, tip_amount, passenger_count, trip_distance
 FROM yellow
-WHERE passenger_count = 1 
+WHERE passenger_count > 2 
   AND total_amount > 10
-ORDER BY trip_distance
-LIMIT 20;
+ORDER BY desc(trip_distance)
+LIMIT 10;
 ```
 
 
