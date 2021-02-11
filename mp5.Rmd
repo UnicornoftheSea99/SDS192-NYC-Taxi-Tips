@@ -34,7 +34,6 @@ references:
   url: https://bookdown.org/yihui/rmarkdown/
 ---
 
-
 ```{r setup, include=FALSE}
 library(tidyverse)
 library(sds192)
@@ -54,17 +53,9 @@ db <- dbConnect(
 
 ## Exploratory data analysis
 
-Make sure that you can get this chunk to run:
-
 ```{sql, connection = db}
 SHOW DATABASES
 ```
-
-
-Note how the chunk has the engine type `sql` instead of `r`. 
-Note always how the results come directly back into R and show up in the HTML output. 
-
-If you want to save the results of your query as a data frame, so that you can use it in any later R chunks, add the `connection` and `output.var` chunk options, like this:
 
 ```{sql, connection=db}
 SHOW TABLES;
@@ -74,113 +65,10 @@ SHOW TABLES;
 DESCRIBE yellow;
 ```
 
-```{sql, connection=db}
-DESCRIBE yellow_sum;
-```
+## SQL Query
 
-#Emily Attempts
-
-```{sql connection=taxidb}
-/*
-USE taxidb;
-
-DROP TABLE IF EXISTS taxi_zones;
-
-
-CREATE TABLE `taxi_zones` (
-  `LocationID` varchar(255) NOT NULL DEFAULT '',
-  `Borough` varchar(255) NOT NULL DEFAULT '',
-  `Zone` varchar(255) NOT NULL DEFAULT '',
-  `service_zone` varchar(255) NOT NULL DEFAULT '',
-  PRIMARY KEY (`LocationID`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
-LOAD DATA LOCAL INFILE './taxi+_zone_lookup.csv' INTO TABLE `taxi_zones`
-  FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' IGNORE 1 LINES;
-  */
-```
-
-```{r}
-
-# taxidb <- dbConnect(RMySQL::MySQL(), dbname = "taxidb")
-# taxi_zones <- tbl(taxidb, "taxi_zones")
-# knitr::opts_chunk$set(
-#   message = FALSE,
-#   echo = TRUE, 
-#   connection = taxidb, 
-#   max.print = 20
-# )
-
-```
-
-```{sql connection=db}
-CREATE TABLE taxi_zones (
-  LocationID varchar(255) NOT NULL,
-  Borough varchar(255) NOT NULL,
-  Zone varchar(255) NOT NULL,
-  service_zone varchar(255) NOT NULL,
-  PRIMARY KEY (LocationID)
-);
-
-LOAD DATA LOCAL INFILE  './taxi+_zone_lookup.csv'
-INTO TABLE taxi_zones
-FIELDS TERMINATED BY ',' 
-ENCLOSED BY '"'
-LINES TERMINATED BY '\n'
-IGNORE 1 ROWS;
-```
-
-```{r}
-taxi_zones2 <- read_csv("taxi+_zone_lookup.csv")
-```
-
-```{sql, connection=db, output.var="first_hundred_yellow"}
-SELECT 
-PULocationID, trip_distance, fare_amount, tip_amount
-FROM yellow 
-JOIN taxi_zones ON yellow.PULocationID = taxi_zones2.LocationID
-```
-
-
-```{sql, connection=db}
-/*DESCRIBE yellow_old_sum;*/
-
-SELECT * 
-FROM yellow_old_sum
-LIMIT 10;
-```
-
-```{sql, connection=db, output.var="first_ten_yellow"}
-SELECT * 
-FROM yellow 
-LIMIT 0, 10;
-```
-
-```{sql connection = db, output.var = "total_amount_1k"}
-SELECT total_amount
-FROM yellow
-LIMIT 100;
-```
-
-```{sql connection = db, output.var = "passenger_count"}
-SELECT passenger_count
-FROM yellow
-LIMIT 100;
-```
-
-Now we have this object in R:
-
-```{r}
-tables
-yellow
-#yellowsum
-first_ten_yellow
-total_amount_1k
-passenger_count
-```
-
-#Cash
-```{sql connection=db}
+##Cash
+```{sql connection=db, output.var = "payment_cash"}
 SELECT  tpep_dropoff_datetime, payment_type, total_amount, tip_amount, passenger_count, trip_distance
 FROM yellow
 WHERE passenger_count < 4 
@@ -191,7 +79,7 @@ ORDER BY trip_distance desc
 LIMIT 10;
 ```
 
-#Credit
+##Credit
 ```{sql connection = db, output.var = "payment_cc"}
 SELECT  tpep_dropoff_datetime, total_amount, tip_amount, passenger_count, trip_distance
 FROM yellow
@@ -203,7 +91,7 @@ ORDER BY trip_distance desc
 LIMIT 10;
 ```
 
-#Both Types of Payment
+##Both Types of Payment
 ```{sql connection = db, output.var = "payment"}
 SELECT  tpep_dropoff_datetime, PULocationID, passenger_count, trip_distance, payment_type, total_amount, tip_amount, (tip_amount/total_amount)*100 AS tip_percent
 FROM yellow
@@ -215,22 +103,16 @@ LIMIT 10;
 
 ```
 
-#Trying to change values in payment_type
-#Doesn't Work
-```{sql connection = db}
-ALTER TABLE payment
-  MODIFY payment_type varchar(255);
-```
-```{sql connection = db} 
-UPDATE payment
-  SET payment_type = 'Credit' 
-  WHERE payment_type = 1;
- 
-```
-
 ```{r}
+payment_cash
 payment_cc
 payment
+```
+
+## Data Wrangling
+
+```{r}
+taxi_zones2 <- read_csv("taxi+_zone_lookup.csv")
 ```
 
 ```{r}
@@ -262,14 +144,6 @@ You can cite references using parentheses or not. @xie2016bookdown wrote about t
 ```
 
 
-## Query magic
-
-```{r}
-
-#flights <- tbl(db, "flights")
-
-```
-
 ## Analysis
 
 What did you discover? 
@@ -294,17 +168,16 @@ In this assignment, we attempted the following [standards](https://beanumber.git
 - `r standard_button("query")`: We met the Query standard because we...
 - `r standard_button("github")`: We met the Github standard because we...
 - `r standard_button("markdown")`: We mastered the R Markdown standard because we...
-- `r standard_button("function")`: We mastered the Function standard because we...
+<!-- - `r standard_button("function")`: We mastered the Function standard because we... -->
 - `r standard_button("wrangling")`: We mastered the Wrangling standard because we...
-- `r standard_button("iteration")`: We mastered the Iteration standard because we...
+<!-- - `r standard_button("iteration")`: We mastered the Iteration standard because we... -->
 - `r standard_button("relational")`: We mastered the Relational standard because we...
 - `r standard_button("aesthetics")`: We mastered the Aesthetics standard because we...
 - `r standard_button("context")`: We mastered the Context standard because we...
 - `r standard_button("ethics")`: We mastered the Ethics standard because we...
-- `r standard_button("reshape")`: We mastered the Reshape standard because we...
-- `r standard_button("spatial")`: We met the Spatial standard because we...
-- `r standard_button("leaflet")`: We met the Leaflet standard because we...
-
+<!-- - `r standard_button("reshape")`: We mastered the Reshape standard because we... -->
+<!-- - `r standard_button("spatial")`: We met the Spatial standard because we... -->
+<!-- - `r standard_button("leaflet")`: We met the Leaflet standard because we... -->
 
 
 ## References
