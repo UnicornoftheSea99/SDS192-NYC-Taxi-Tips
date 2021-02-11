@@ -74,8 +74,9 @@ FROM yellow
 WHERE passenger_count < 4
   AND total_amount < 80 
   AND tip_amount > 0
-ORDER BY trip_distance desc
-LIMIT 10000;
+/*ORDER BY trip_distance desc*/
+ORDER BY RAND()
+LIMIT 2800000;
 
 ```
 
@@ -137,8 +138,8 @@ tz <- ggplot(data = taxi_w_tip, aes(color = borough)) +
    aes(fill = average)  +
    scale_fill_distiller(
      "Average % Tip",
-     palette = "",
-     limits = c(0.0, 80.0),
+     palette = "Spectral",
+     limits = c(min(taxi_w_tip$average), max(taxi_w_tip$average)),
      na.value="black"
   )
 
