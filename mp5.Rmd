@@ -84,7 +84,7 @@ taxi_zones2 <- read_csv("taxi+_zone_lookup.csv")
 ```
 
 ```{sql connection=taxidb}
-
+/*
 USE taxidb;
 
 DROP TABLE IF EXISTS taxi_zones;
@@ -100,24 +100,45 @@ CREATE TABLE `taxi_zones` (
 
 LOAD DATA LOCAL INFILE './taxi+_zone_lookup.csv' INTO TABLE `taxi_zones`
   FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' IGNORE 1 LINES;
+  */
 ```
 
 ```{r}
-taxidb <- dbConnect(RMySQL::MySQL(), dbname = "taxidb")
-taxi_zones <- tbl(taxidb, "taxi_zones")
-knitr::opts_chunk$set(
-  message = FALSE,
-  echo = TRUE, 
-  connection = taxidb, 
-  max.print = 20
-)
+
+# taxidb <- dbConnect(RMySQL::MySQL(), dbname = "taxidb")
+# taxi_zones <- tbl(taxidb, "taxi_zones")
+# knitr::opts_chunk$set(
+#   message = FALSE,
+#   echo = TRUE, 
+#   connection = taxidb, 
+#   max.print = 20
+# )
+
 ```
+
+```{sql connection=db}
+CREATE TABLE taxi_zones (
+  LocationID varchar(255) NOT NULL,
+  Borough varchar(255) NOT NULL,
+  Zone varchar(255) NOT NULL,
+  service_zone varchar(255) NOT NULL,
+  PRIMARY KEY (LocationID)
+);
+
+LOAD DATA LOCAL INFILE  './taxi+_zone_lookup.csv'
+INTO TABLE taxi_zones
+FIELDS TERMINATED BY ',' 
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS;
+```
+
 
 ```{sql, connection=db, output.var="first_hundred_yellow"}
 SELECT 
 PULocationID, trip_distance, fare_amount, tip_amount
 FROM yellow 
-JOIN taxi_zones ON yellow.PULocationID = taxi_zones.LocationID
+JOIN taxi_zones ON yellow.PULocationID = taxi_zones2.LocationID
 ```
 
 
