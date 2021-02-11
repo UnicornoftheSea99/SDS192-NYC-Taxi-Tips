@@ -121,13 +121,11 @@ list.files(dsn)
 
 ```{r}
 taxi_zone_look <- read_sf(dsn)
-taxi_zone_look
-```
 
-
-```{r}
 taxi_w_tip <- taxi_zone_look %>%
   left_join(tip_by_borough, by=c("borough"="Borough"))
+
+taxi_w_tip
 ```
 
 
@@ -147,20 +145,6 @@ tz <- ggplot(data = taxi_w_tip, aes(color = borough)) +
 tz
 ```
 
-
-```{r}
-#zooms to correct area but want it to be colored by burough
-library(leaflet)
-leaflet() %>%
-  addTiles() %>%
-  addPolygons(
-    data = taxi_zone_look,
-    fill = ~borough,
-  )%>%
-   setView(lng = -74, lat = 40.66, zoom = 10)
-```
-
-
 ## Analysis
 
 What did you discover? 
@@ -177,7 +161,6 @@ What did you *learn* about the data set you explored?
 sds192::text_stats()
 ```
 
-
 ## Standards
 
 In this assignment, we attempted the following [standards](https://beanumber.github.io/sds192/standards.html):
@@ -185,16 +168,15 @@ In this assignment, we attempted the following [standards](https://beanumber.git
 - `r standard_button("query")`: We met the Query standard because we...
 - `r standard_button("github")`: We mastered the Github standard because we used Github to effectively collaborate and were able to resolve our merge conflicts.
 - `r standard_button("markdown")`: We mastered the R Markdown standard because we used markdown to structure our information, made sure only necessary content was displayed on the page, and employed a variety of web elements.
-<!-- - `r standard_button("function")`: We mastered the Function standard because we... -->
 - `r standard_button("wrangling")`: We mastered the Wrangling standard because we...
-<!-- - `r standard_button("iteration")`: We mastered the Iteration standard because we... -->
 - `r standard_button("relational")`: We mastered the Relational standard because we...
 - `r standard_button("aesthetics")`: We mastered the Aesthetics standard because we...
 - `r standard_button("context")`: We mastered the Context standard because we...
 - `r standard_button("ethics")`: We mastered the Ethics standard because we...
-<!-- - `r standard_button("reshape")`: We mastered the Reshape standard because we... -->
  - `r standard_button("spatial")`: We met the Spatial standard because we... 
- - `r standard_button("leaflet")`: We met the Leaflet standard because we...
+
 
 
 ## References
+https://s3.amazonaws.com/nyc-tlc/misc/taxi+_zone_lookup.csv
+https://s3.amazonaws.com/nyc-tlc/misc/taxi_zones.zip
