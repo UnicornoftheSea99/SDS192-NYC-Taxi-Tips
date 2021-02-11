@@ -142,7 +142,6 @@ https://rmarkdown.rstudio.com/authoring_knitr_engines.html%23sql#sql) for more i
 You can cite references using parentheses or not. @xie2016bookdown wrote about this. See also [@xie2016bookdown].
 
 ```{r}
-
 url <- "https://s3.amazonaws.com/nyc-tlc/misc/taxi_zones.zip"
 local_file <- basename(url)
 download.file(url, destfile = local_file)
@@ -161,13 +160,27 @@ taxi_zone_look
 
 
 ```{r}
-#shows all the taxi zones in nyc
-#want it by burough
-
-taxi_zone_look %>%
-  st_geometry() %>%
-  plot(col = gray.colors(nrow(taxi_zone_look)))
+taxi_w_tip <- taxi_zone_look %>%
+  left_join(tip_by_borough, by=c("borough"="Borough"))
 ```
+
+
+```{r}
+#shows boroughs of nyc
+tz <- ggplot(data = taxi_w_tip, aes(color = borough)) +
+  #annotation_map_tile(zoom = 6, type = "osm") + 
+  geom_sf(alpha = 0.5) +
+  theme_void()+
+   aes(fill = average)  
+   scale_fill_distiller(
+     "Average\nPercentage\nTip", 
+     palette = "Greys", 
+     limits = c(0.0, 100.0)
+  )
+tz
+```
+
+
 ```{r}
 #zooms to correct area but want it to be colored by burough
 library(leaflet)
