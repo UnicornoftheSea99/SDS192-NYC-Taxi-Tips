@@ -64,8 +64,8 @@ What is this article about? [^github]
 
 Make sure that you can get this chunk to run:
 
-```{sql, connection = db, output.var="databases"}
-SHOW DATABASES;
+```{sql, connection = db}
+SHOW DATABASES
 ```
 
 Note how the chunk has the engine type `sql` instead of `r`. 
@@ -73,34 +73,35 @@ Note always how the results come directly back into R and show up in the HTML ou
 
 If you want to save the results of your query as a data frame, so that you can use it in any later R chunks, add the `connection` and `output.var` chunk options, like this:
 
-```{sql, connection=db, output.var="tables"}
+```{sql, connection=db}
 SHOW TABLES;
 ```
 
-```{sql, connection=db, output.var="yellow"}
+```{sql, connection=db}
 DESCRIBE yellow;
 ```
 
-```{sql, connection=db, output.var="yellowsum"}
+```{sql, connection=db}
 DESCRIBE yellow_sum;
 ```
 
-```{sql, connection=db, output.var="yellowoldsum"}
+```{sql, connection=db}
 /*DESCRIBE yellow_old_sum;*/
 ```
 
 
-```{sql, connection=db, output.var="first_ten_yellow"}
-SELECT * FROM yellow LIMIT 10;
->>>>>>> a21cfeda785b9e0981fce1d079d1307f905c5aac
+```{sql, connection=db}
+SELECT * 
+FROM yellow 
+LIMIT 0, 10;
 ```
 
 Now we have this object in R:
 
 ```{r}
-databases
-table
-first_ten_yellow
+# databases
+# table
+# first_ten_yellow
 ```
 
 Please see the [SQL chapter of the `bookdown` book](
@@ -122,7 +123,7 @@ You can cite references using parentheses or not. @xie2016bookdown wrote about t
 ## Query magic
 
 ```{r}
-flights <- tbl(db, "flights")
+# flights <- tbl(db, "flights")
 ```
 
 ## Analysis
