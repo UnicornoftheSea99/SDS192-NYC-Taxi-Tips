@@ -56,9 +56,6 @@ knitr::opts_chunk$set(
 
 ## Introduction
 
-What is this article about? [^github]
-
-[^github]: Please see [our GitHub repository](https://github.com/sds192-s20/mp3-group-*) for complete code. 
 
 ## Exploratory data analysis
 
@@ -92,16 +89,34 @@ DESCRIBE yellow_sum;
 
 ```{sql, connection=db, output.var="first_ten_yellow"}
 SELECT * FROM yellow LIMIT 10;
->>>>>>> a21cfeda785b9e0981fce1d079d1307f905c5aac
+```
+
+```{sql connection = db, output.var = "total_amount"}
+SELECT *
+FROM total_amount;
+```
+
+```{sql connection = db, output.var = "passenger_count"}
+
 ```
 
 Now we have this object in R:
 
 ```{r}
-databases
-table
+tables
 first_ten_yellow
 ```
+
+```{sql connection=db}
+
+SELECT total_amount, tip_amount
+FROM yellow
+WHERE passenger_count = 1 
+  AND total_amount > 10
+ORDER BY trip_distance
+LIMIT 20;
+```
+
 
 Please see the [SQL chapter of the `bookdown` book](
 https://rmarkdown.rstudio.com/authoring_knitr_engines.html%23sql#sql) for more information. 
