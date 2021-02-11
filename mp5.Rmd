@@ -1,5 +1,5 @@
 ---
-title: "Querying Film Data in SQL"
+title: "Querying NYC Taxi Data in SQL"
 subtitle: "SDS 192: MP5"
 author: 
 - name: Emily Rhyu
@@ -133,14 +133,41 @@ https://rmarkdown.rstudio.com/authoring_knitr_engines.html%23sql#sql) for more i
 
 You can cite references using parentheses or not. @xie2016bookdown wrote about this. See also [@xie2016bookdown].
 
-```{r airport-map, fig.cap="Map of the first ten airports."}
-# library(leaflet)
-# leaflet() %>%
-#   addTiles() %>%
-#   addMarkers(
-#     data = first_ten_airports,
-#     popup = ~name
-#   )
+```{r}
+
+url <- "https://s3.amazonaws.com/nyc-tlc/misc/taxi_zones.zip"
+local_file <- basename(url)
+download.file(url, destfile = local_file)
+unzip(local_file, exdir = "taxi_zone_bounds")
+
+library(sf)
+dsn <- path.expand("taxi_zone_bounds")
+dsn
+list.files(dsn)
+```
+
+```{r}
+#st_layers(dsn)
+taxi_zone_look <- read_sf(dsn)
+taxi_zone_look
+```
+
+
+```{r}
+#shows all the taxi zones in nyc
+taxi_zone_look %>%
+  st_geometry() %>%
+  plot(col = gray.colors(nrow(taxi_zone_look)))
+```
+```{r}
+library(leaflet)
+leaflet() %>%
+  addTiles() %>%
+  addPolygons(
+    data = taxi_zone_look,
+    #popup = ~name
+  )%>%
+   setView(lng = -74, lat = 40.66, zoom = 10)
 ```
 
 
@@ -166,8 +193,8 @@ sds192::text_stats()
 In this assignment, we attempted the following [standards](https://beanumber.github.io/sds192/standards.html):
 
 - `r standard_button("query")`: We met the Query standard because we...
-- `r standard_button("github")`: We met the Github standard because we...
-- `r standard_button("markdown")`: We mastered the R Markdown standard because we...
+- `r standard_button("github")`: We mastered the Github standard because we used Github to effectively collaborate and were able to resolve our merge conflicts.
+- `r standard_button("markdown")`: We mastered the R Markdown standard because we used markdown to structure our information, made sure only necessary content was displayed on the page, and employed a variety of web elements.
 <!-- - `r standard_button("function")`: We mastered the Function standard because we... -->
 - `r standard_button("wrangling")`: We mastered the Wrangling standard because we...
 <!-- - `r standard_button("iteration")`: We mastered the Iteration standard because we... -->
