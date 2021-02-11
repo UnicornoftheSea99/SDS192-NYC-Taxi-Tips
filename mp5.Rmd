@@ -107,7 +107,7 @@ WHERE passenger_count < 4
   AND total_amount < 80 
   AND tip_amount > 0
 ORDER BY trip_distance desc
-LIMIT 10;
+LIMIT 10000;
 
 ```
 
@@ -172,9 +172,9 @@ tz <- ggplot(data = taxi_w_tip, aes(color = borough)) +
   theme_void()+
    aes(fill = average)  +
    scale_fill_distiller(
-     "Average\nPercentage\nTip",
+     "Average % Tip",
      palette = "",
-     limits = c(0.0, 100.0),
+     limits = c(0.0, 80.0),
      na.value="black"
   )
 
@@ -227,8 +227,8 @@ In this assignment, we attempted the following [standards](https://beanumber.git
 - `r standard_button("context")`: We mastered the Context standard because we...
 - `r standard_button("ethics")`: We mastered the Ethics standard because we...
 <!-- - `r standard_button("reshape")`: We mastered the Reshape standard because we... -->
-<!-- - `r standard_button("spatial")`: We met the Spatial standard because we... -->
-<!-- - `r standard_button("leaflet")`: We met the Leaflet standard because we... -->
+ - `r standard_button("spatial")`: We met the Spatial standard because we... 
+ - `r standard_button("leaflet")`: We met the Leaflet standard because we...
 
 
 ## References
