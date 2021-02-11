@@ -109,22 +109,22 @@ https://rmarkdown.rstudio.com/authoring_knitr_engines.html%23sql#sql) for more i
 You can cite references using parentheses or not. @xie2016bookdown wrote about this. See also [@xie2016bookdown].
 
 ```{r}
-url <- "https://s3.amazonaws.com/nyc-tlc/misc/taxi_zones.zip"
+url <- "https://data.cityofnewyork.us/api/geospatial/tqmj-j8zm?method=export&format=Shapefile"
 local_file <- basename(url)
 download.file(url, destfile = local_file)
-unzip(local_file, exdir = "taxi_zone_bounds")
+unzip(local_file, exdir = "taxi_zone_bounds2")
 
 library(sf)
-dsn <- path.expand("taxi_zone_bounds")
-dsn
-list.files(dsn)
+dsn2 <- path.expand("taxi_zone_bounds2")
+dsn2
+list.files(dsn2)
 ```
 
 ```{r}
-taxi_zone_look <- read_sf(dsn)
+taxi_zone_look <- read_sf(dsn2)
 
 taxi_w_tip <- taxi_zone_look %>%
-  left_join(tip_by_borough, by=c("borough"="Borough"))
+  left_join(tip_by_borough, by=c("boro_name"="Borough"))
 
 taxi_w_tip
 ```
@@ -132,7 +132,7 @@ taxi_w_tip
 
 ```{r}
 #shows boroughs of nyc
-tz <- ggplot(data = taxi_w_tip, aes(color = borough)) +
+tz <- ggplot(data = taxi_w_tip, aes(color = boro_name)) +
   geom_sf(alpha = 0.5) +
   theme_void()+
    aes(fill = average)  +
@@ -180,4 +180,4 @@ In this assignment, we attempted the following [standards](https://beanumber.git
 
 ## References
 https://s3.amazonaws.com/nyc-tlc/misc/taxi+_zone_lookup.csv
-https://s3.amazonaws.com/nyc-tlc/misc/taxi_zones.zip
+https://data.cityofnewyork.us/api/geospatial/tqmj-j8zm?method=export&format=Shapefile
