@@ -215,17 +215,17 @@ LIMIT 10;
 
 ```
 
+#Trying to change values in payment_type
 #Doesn't Work
 ```{sql connection = db}
-/*
+ALTER TABLE payment
+  MODIFY payment_type varchar(255);
+```
+```{sql connection = db} 
 UPDATE payment
   SET payment_type = 'Credit' 
   WHERE payment_type = 1;
-  */
-  
-ALTER TABLE payment
-  ADD tip_percent int NOT NULL
-    AFTER tip_amount;
+ 
 ```
 
 ```{r}
