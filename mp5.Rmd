@@ -67,28 +67,36 @@ DESCRIBE yellow;
 
 ## SQL Query
 
+```{sql connection = db, output.var = "paytype"}
+SELECT payment_type
+FROM yellow
+LIMIT 100;
+```
+
 ##Cash
 ```{sql connection=db, output.var = "payment_cash"}
+EXPLAIN
 SELECT  tpep_dropoff_datetime, payment_type, total_amount, tip_amount, passenger_count, trip_distance
 FROM yellow
 WHERE passenger_count < 4 
   AND total_amount < 80 
   AND tip_amount > 0
   AND payment_type = 2
-ORDER BY trip_distance desc
-LIMIT 10;
+ORDER BY trip_distance desc;
+/*LIMIT 10;*/
 ```
 
 ##Credit
 ```{sql connection = db, output.var = "payment_cc"}
+EXPLAIN
 SELECT  tpep_dropoff_datetime, total_amount, tip_amount, passenger_count, trip_distance
 FROM yellow
 WHERE passenger_count < 4
   AND total_amount < 80 
   AND tip_amount > 0
   AND payment_type = 1
-ORDER BY trip_distance desc
-LIMIT 10;
+ORDER BY trip_distance desc;
+/*LIMIT 10;*/
 ```
 
 ##Both Types of Payment
