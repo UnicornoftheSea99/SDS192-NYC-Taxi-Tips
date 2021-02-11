@@ -164,24 +164,8 @@ FROM yellow
 WHERE passenger_count < 4 
   AND total_amount < 80 
   AND tip_amount > 0
-  AND payment_type = 2
 ORDER BY trip_distance desc
-LIMIT 10;
-```
-
-```{sql connection = db, output.var = "payment_cc"}
-SELECT  tpep_dropoff_datetime, total_amount, tip_amount, passenger_count, trip_distance
-FROM yellow
-WHERE passenger_count < 4
-  AND total_amount < 80 
-  AND tip_amount > 0
-  AND payment_type = 1
-ORDER BY trip_distance desc
-LIMIT 10;
-```
-
-```{r}
-payment_cc
+LIMIT 30;
 ```
 
 Please see the [SQL chapter of the `bookdown` book](
