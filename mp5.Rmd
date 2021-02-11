@@ -1,5 +1,5 @@
 ---
-title: "Put a real title here"
+title: "Querying Film Data in SQL"
 subtitle: "SDS 192: MP5"
 author: 
 - name: Emily Rhyu
@@ -46,14 +46,15 @@ db <- dbConnect(
   password = "DSismfc@S", 
   dbname = "nyctaxi"
 )
-knitr::opts_chunk$set(
-  message = FALSE,
-  echo = TRUE, 
-  connection = db, 
-  max.print = 20
-)
+# db <- dbConnect(RMySQL::MySQL(), dbname = "taxidb")
+# taxi_zones <- tbl(db, "taxi_zones")
+# knitr::opts_chunk$set(
+#   message = FALSE,
+#   echo = TRUE, 
+#   connection = db, 
+#   max.print = 20
+# )
 ```
-
 
 ## Introduction
 
@@ -65,9 +66,10 @@ What is this article about? [^github]
 
 Make sure that you can get this chunk to run:
 
-```{sql, connection=db, output.var="databases"}
+```{sql, connection = db, output.var="databases"}
 SHOW DATABASES;
 ```
+
 
 Note how the chunk has the engine type `sql` instead of `r`. 
 Note always how the results come directly back into R and show up in the HTML output. 
@@ -82,27 +84,53 @@ SHOW TABLES;
 DESCRIBE yellow;
 ```
 
-```{sql, connection=db, output.var="yellowsum"}
-DESCRIBE yellow_sum;
+```{r}
+taxi_zones2 <- read_csv("taxi+_zone_lookup.csv")
 ```
+```{sql connection=taxidb}
 
-```{sql, connection=db, output.var="yellowoldsum"}
-/*DESCRIBE yellow_old_sum;*/
+USE taxidb;
+
+DROP TABLE IF EXISTS taxi_zones;
+
+CREATE TABLE `taxi_zones` (
+  `LocationID` varchar(255) NOT NULL DEFAULT '',
+  `Borough` varchar(255) NOT NULL DEFAULT '',
+  `Zone` varchar(255) NOT NULL DEFAULT '',
+  `service_zone` varchar(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`LocationID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+LOAD DATA LOCAL INFILE './taxi+_zone_lookup.csv' INTO TABLE `taxi_zones`
+  FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' IGNORE 1 LINES;
+```
+```{r}
+taxidb <- dbConnect(RMySQL::MySQL(), dbname = "taxidb")
+taxi_zones <- tbl(taxidb, "taxi_zones")
+knitr::opts_chunk$set(
+  message = FALSE,
+  echo = TRUE, 
+  connection = taxidb, 
+  max.print = 20
+)
 ```
 
 
 ```{sql, connection=db, output.var="first_hundred_yellow"}
-/*SELECT trip_distance, passenger_count, fare_amount, tip_amount, total_amount*/
-SELECT *
+SELECT 
+PULocationID, trip_distance, fare_amount, tip_amount
 FROM yellow 
+JOIN taxi_zones ON yellow.PULocationID = taxi_zones.LocationID
 LIMIT 100;
 ```
 
 Now we have this object in R:
 
 ```{r}
-first_ten_yellow
-
+#databases
+#tables
+yellow
+first_hundred_yellow
 ```
 
 Please see the [SQL chapter of the `bookdown` book](
@@ -124,9 +152,8 @@ You can cite references using parentheses or not. @xie2016bookdown wrote about t
 ## Query magic
 
 ```{r}
-flights <- tbl(db, "flights")
+#flights <- tbl(db, "flights")
 ```
-
 
 ## Analysis
 
