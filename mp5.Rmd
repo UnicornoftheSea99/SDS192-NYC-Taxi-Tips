@@ -168,15 +168,16 @@ taxi_w_tip <- taxi_zone_look %>%
 ```{r}
 #shows boroughs of nyc
 tz <- ggplot(data = taxi_w_tip, aes(color = borough)) +
-  #annotation_map_tile(zoom = 6, type = "osm") + 
   geom_sf(alpha = 0.5) +
   theme_void()+
-   aes(fill = average)  
+   aes(fill = average)  +
    scale_fill_distiller(
-     "Average\nPercentage\nTip", 
-     palette = "Greys", 
-     limits = c(0.0, 100.0)
+     "Average\nPercentage\nTip",
+     palette = "",
+     limits = c(0.0, 100.0),
+     na.value="black"
   )
+
 tz
 ```
 
