@@ -46,28 +46,18 @@ db <- dbConnect(
   password = "DSismfc@S", 
   dbname = "nyctaxi"
 )
-# db <- dbConnect(RMySQL::MySQL(), dbname = "taxidb")
-# taxi_zones <- tbl(db, "taxi_zones")
-# knitr::opts_chunk$set(
-#   message = FALSE,
-#   echo = TRUE, 
-#   connection = db, 
-#   max.print = 20
-# )
+
 ```
 
 ## Introduction
 
-What is this article about? [^github]
-
-[^github]: Please see [our GitHub repository](https://github.com/sds192-s20/mp3-group-*) for complete code. 
 
 ## Exploratory data analysis
 
 Make sure that you can get this chunk to run:
 
-```{sql, connection = db, output.var="databases"}
-SHOW DATABASES;
+```{sql, connection = db}
+SHOW DATABASES
 ```
 
 
@@ -76,22 +66,29 @@ Note always how the results come directly back into R and show up in the HTML ou
 
 If you want to save the results of your query as a data frame, so that you can use it in any later R chunks, add the `connection` and `output.var` chunk options, like this:
 
-```{sql, connection=db, output.var="tables"}
+```{sql, connection=db}
 SHOW TABLES;
 ```
 
-```{sql, connection=db, output.var="yellow"}
+```{sql, connection=db}
 DESCRIBE yellow;
 ```
 
+```{sql, connection=db}
+DESCRIBE yellow_sum;
+```
+
+#Emily Attempts
 ```{r}
 taxi_zones2 <- read_csv("taxi+_zone_lookup.csv")
 ```
+
 ```{sql connection=taxidb}
 
 USE taxidb;
 
 DROP TABLE IF EXISTS taxi_zones;
+
 
 CREATE TABLE `taxi_zones` (
   `LocationID` varchar(255) NOT NULL DEFAULT '',
@@ -104,6 +101,7 @@ CREATE TABLE `taxi_zones` (
 LOAD DATA LOCAL INFILE './taxi+_zone_lookup.csv' INTO TABLE `taxi_zones`
   FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' IGNORE 1 LINES;
 ```
+
 ```{r}
 taxidb <- dbConnect(RMySQL::MySQL(), dbname = "taxidb")
 taxi_zones <- tbl(taxidb, "taxi_zones")
@@ -115,23 +113,73 @@ knitr::opts_chunk$set(
 )
 ```
 
-
 ```{sql, connection=db, output.var="first_hundred_yellow"}
 SELECT 
 PULocationID, trip_distance, fare_amount, tip_amount
 FROM yellow 
 JOIN taxi_zones ON yellow.PULocationID = taxi_zones.LocationID
+```
+
+
+```{sql, connection=db}
+/*DESCRIBE yellow_old_sum;*/
+
+SELECT * 
+FROM yellow_old_sum
+LIMIT 10;
+```
+
+```{sql, connection=db, output.var="first_ten_yellow"}
+SELECT * 
+FROM yellow 
+LIMIT 0, 10;
+```
+
+```{sql connection = db, output.var = "total_amount_1k"}
+SELECT total_amount
+FROM yellow
+LIMIT 100;
+```
+
+```{sql connection = db, output.var = "passenger_count"}
+SELECT passenger_count
+FROM yellow
 LIMIT 100;
 ```
 
 Now we have this object in R:
 
 ```{r}
-#databases
-#tables
+tables
 yellow
-first_hundred_yellow
+#yellowsum
+first_ten_yellow
+total_amount_1k
+passenger_count
 ```
+
+```{sql connection=db}
+SELECT  tpep_dropoff_datetime, payment_type, total_amount, tip_amount, passenger_count, trip_distance
+FROM yellow
+WHERE passenger_count <= 2 
+  AND total_amount < 80 
+  AND tip_amount > 0
+  AND payment_type = 2
+ORDER BY trip_distance DESC
+LIMIT 10;
+```
+
+```{sql connection = db, output.var = "payment_cc"}
+SELECT  tpep_dropoff_datetime, payment_type, total_amount, tip_amount, passenger_count, trip_distance
+FROM yellow
+WHERE passenger_count <= 2 
+  AND total_amount < 80 
+  AND tip_amount > 0
+  AND payment_type = 1
+ORDER BY trip_distance DESC
+LIMIT 10;
+```
+
 
 Please see the [SQL chapter of the `bookdown` book](
 https://rmarkdown.rstudio.com/authoring_knitr_engines.html%23sql#sql) for more information. 
@@ -152,7 +200,9 @@ You can cite references using parentheses or not. @xie2016bookdown wrote about t
 ## Query magic
 
 ```{r}
+
 #flights <- tbl(db, "flights")
+
 ```
 
 ## Analysis
