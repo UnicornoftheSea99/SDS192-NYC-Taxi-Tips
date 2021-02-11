@@ -66,58 +66,27 @@ DESCRIBE yellow;
 ```
 
 ## SQL Query
-
 ```{sql connection = db, output.var = "paytype"}
 SELECT payment_type
 FROM yellow
 LIMIT 100;
 ```
 
-##Cash
-```{sql connection=db, output.var = "payment_cash"}
-EXPLAIN
-SELECT  tpep_dropoff_datetime, payment_type, total_amount, tip_amount, passenger_count, trip_distance
-FROM yellow
-WHERE passenger_count < 4 
-  AND total_amount < 80 
-  AND tip_amount > 0
-<<<<<<< HEAD
-ORDER BY trip_distance desc
-LIMIT 30;
-=======
-  AND payment_type = 2
-ORDER BY trip_distance desc;
-/*LIMIT 10;*/
-```
-
-##Credit
-```{sql connection = db, output.var = "payment_cc"}
-EXPLAIN
-SELECT  tpep_dropoff_datetime, total_amount, tip_amount, passenger_count, trip_distance
-FROM yellow
-WHERE passenger_count < 4
-  AND total_amount < 80 
-  AND tip_amount > 0
-  AND payment_type = 1
-ORDER BY trip_distance desc;
-/*LIMIT 10;*/
-```
 
 ##Both Types of Payment
 ```{sql connection = db, output.var = "payment"}
+/*EXPLAIN*/
 SELECT  tpep_dropoff_datetime, PULocationID, passenger_count, trip_distance, payment_type, total_amount, tip_amount, (tip_amount/total_amount)*100 AS tip_percent
 FROM yellow
 WHERE passenger_count < 4
   AND total_amount < 80 
   AND tip_amount > 0
 ORDER BY trip_distance desc
-LIMIT 10;
+LIMIT 10000;
 
 ```
 
 ```{r}
-payment_cash
-payment_cc
 payment
 ```
 
@@ -127,7 +96,7 @@ payment
 taxi_zones2 <- read_csv("taxi+_zone_lookup.csv")
 ```
 
-```{r}
+```{r, warning=FALSE}
 payments_join <- payment %>%
   inner_join(taxi_zones2, by=c("PULocationID" = "LocationID"))
 
@@ -176,9 +145,9 @@ tz <- ggplot(data = taxi_w_tip, aes(color = borough)) +
   theme_void()+
    aes(fill = average)  +
    scale_fill_distiller(
-     "Average\nPercentage\nTip",
+     "Average % Tip",
      palette = "",
-     limits = c(0.0, 100.0),
+     limits = c(0.0, 80.0),
      na.value="black"
   )
 
@@ -231,8 +200,8 @@ In this assignment, we attempted the following [standards](https://beanumber.git
 - `r standard_button("context")`: We mastered the Context standard because we...
 - `r standard_button("ethics")`: We mastered the Ethics standard because we...
 <!-- - `r standard_button("reshape")`: We mastered the Reshape standard because we... -->
-<!-- - `r standard_button("spatial")`: We met the Spatial standard because we... -->
-<!-- - `r standard_button("leaflet")`: We met the Leaflet standard because we... -->
+ - `r standard_button("spatial")`: We met the Spatial standard because we... 
+ - `r standard_button("leaflet")`: We met the Leaflet standard because we...
 
 
 ## References
