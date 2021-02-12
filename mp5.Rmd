@@ -130,7 +130,7 @@ taxi_w_tip
 ```
 
 
-```{r}
+```{r,warning=FALSE}
 #shows boroughs of nyc
 tz <- ggplot(data = taxi_w_tip, aes(color = boro_name)) +
   geom_sf(alpha = 0.5) +
@@ -141,7 +141,8 @@ tz <- ggplot(data = taxi_w_tip, aes(color = boro_name)) +
      palette = "Spectral",
      limits = c(min(taxi_w_tip$average), max(taxi_w_tip$average)),
      na.value="black"
-  )
+  )+
+  geom_sf_label(aes(label = boro_name), fill = "white")  
 
 tz
 ```
