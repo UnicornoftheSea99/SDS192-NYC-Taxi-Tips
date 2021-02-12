@@ -50,6 +50,7 @@ db <- dbConnect(
 
 ## Introduction
 
+![](taxisinnewyork960.jpg)
 
 ## Exploratory data analysis
 
@@ -86,11 +87,9 @@ payment
 
 ## Data Wrangling
 
-```{r}
+```{r, warning=FALSE, message=FALSE}
 taxi_zones2 <- read_csv("taxi+_zone_lookup.csv")
-```
 
-```{r, warning=FALSE}
 payments_join <- payment %>%
   inner_join(taxi_zones2, by=c("PULocationID" = "LocationID"))
 
@@ -102,11 +101,7 @@ tip_by_borough <- payments_join %>%
   )
 ```
 
-
-Please see the [SQL chapter of the `bookdown` book](
-https://rmarkdown.rstudio.com/authoring_knitr_engines.html%23sql#sql) for more information. 
-
-You can cite references using parentheses or not. @xie2016bookdown wrote about this. See also [@xie2016bookdown].
+## Geospatial Data
 
 ```{r}
 url <- "https://data.cityofnewyork.us/api/geospatial/tqmj-j8zm?method=export&format=Shapefile"
@@ -178,7 +173,12 @@ In this assignment, we attempted the following [standards](https://beanumber.git
  - `r standard_button("spatial")`: We met the Spatial standard because we... 
 
 
+Please see the [SQL chapter of the `bookdown` book](
+https://rmarkdown.rstudio.com/authoring_knitr_engines.html%23sql#sql) for more information. 
+
+You can cite references using parentheses or not. @xie2016bookdown wrote about this. See also [@xie2016bookdown].
 
 ## References
 https://s3.amazonaws.com/nyc-tlc/misc/taxi+_zone_lookup.csv
 https://data.cityofnewyork.us/api/geospatial/tqmj-j8zm?method=export&format=Shapefile
+https://www.peoplesworld.org/article/the-decline-and-fall-of-the-nyc-taxi-industry/
