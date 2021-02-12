@@ -76,7 +76,6 @@ LIMIT 100;
 
 ## By Payment Type
 ```{sql connection = db, output.var = "payment"}
-/*EXPLAIN*/
 SELECT  tpep_dropoff_datetime, PULocationID, passenger_count, trip_distance, payment_type, total_amount, tip_amount, (tip_amount/total_amount)*100 AS tip_percent
 FROM yellow
 WHERE passenger_count < 4
@@ -85,7 +84,6 @@ WHERE passenger_count < 4
 /*ORDER BY trip_distance desc*/
 ORDER BY RAND()
 LIMIT 2800000;
-
 ```
 
 ```{r}
@@ -143,8 +141,11 @@ tz <- ggplot(data = taxi_w_tip, aes(color = boro_name)) +
      palette = "Spectral",
      limits = c(min(taxi_w_tip$average), max(taxi_w_tip$average)),
      na.value="black"
-  )+
-  geom_sf_label(aes(label = boro_name), fill = "white")  
+  ) +
+  geom_sf_label(aes(label = boro_name), fill = "white") + 
+  labs(
+    title = "Percentage tips and NYC boroughs" 
+  )
 
 tz
 ```
