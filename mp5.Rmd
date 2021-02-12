@@ -74,13 +74,13 @@ LIMIT 100;
 ```
 
 
-##Both Types of Payment
+## By Payment Type
 ```{sql connection = db, output.var = "payment"}
 /*EXPLAIN*/
 SELECT  tpep_dropoff_datetime, PULocationID, passenger_count, trip_distance, payment_type, total_amount, tip_amount, (tip_amount/total_amount)*100 AS tip_percent
 FROM yellow
 WHERE passenger_count < 4
-  AND total_amount < 80 
+  AND total_amount < 99 
   AND tip_amount > 0
 /*ORDER BY trip_distance desc*/
 ORDER BY RAND()
