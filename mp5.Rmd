@@ -50,6 +50,7 @@ db <- dbConnect(
 
 ## Introduction
 
+![](taxisinnewyork960.jpg)
 
 ## Exploratory data analysis
 
@@ -81,8 +82,9 @@ FROM yellow
 WHERE passenger_count < 4
   AND total_amount < 80 
   AND tip_amount > 0
-ORDER BY trip_distance desc
-LIMIT 10000;
+/*ORDER BY trip_distance desc*/
+ORDER BY RAND()
+LIMIT 2800000;
 
 ```
 
@@ -92,11 +94,9 @@ payment
 
 ## Data Wrangling
 
-```{r}
+```{r, warning=FALSE, message=FALSE}
 taxi_zones2 <- read_csv("taxi+_zone_lookup.csv")
-```
 
-```{r, warning=FALSE}
 payments_join <- payment %>%
   inner_join(taxi_zones2, by=c("PULocationID" = "LocationID"))
 
@@ -108,65 +108,46 @@ tip_by_borough <- payments_join %>%
   )
 ```
 
-
-Please see the [SQL chapter of the `bookdown` book](
-https://rmarkdown.rstudio.com/authoring_knitr_engines.html%23sql#sql) for more information. 
-
-You can cite references using parentheses or not. @xie2016bookdown wrote about this. See also [@xie2016bookdown].
+## Geospatial Data
 
 ```{r}
-url <- "https://s3.amazonaws.com/nyc-tlc/misc/taxi_zones.zip"
+url <- "https://data.cityofnewyork.us/api/geospatial/tqmj-j8zm?method=export&format=Shapefile"
 local_file <- basename(url)
 download.file(url, destfile = local_file)
-unzip(local_file, exdir = "taxi_zone_bounds")
+unzip(local_file, exdir = "taxi_zone_bounds2")
 
 library(sf)
-dsn <- path.expand("taxi_zone_bounds")
-dsn
-list.files(dsn)
+dsn2 <- path.expand("taxi_zone_bounds2")
+dsn2
+list.files(dsn2)
 ```
 
 ```{r}
-taxi_zone_look <- read_sf(dsn)
-taxi_zone_look
-```
+taxi_zone_look <- read_sf(dsn2)
 
-
-```{r}
 taxi_w_tip <- taxi_zone_look %>%
-  left_join(tip_by_borough, by=c("borough"="Borough"))
+  left_join(tip_by_borough, by=c("boro_name"="Borough"))
+
+taxi_w_tip
 ```
 
 
-```{r}
+```{r,warning=FALSE}
 #shows boroughs of nyc
-tz <- ggplot(data = taxi_w_tip, aes(color = borough)) +
+tz <- ggplot(data = taxi_w_tip, aes(color = boro_name)) +
   geom_sf(alpha = 0.5) +
   theme_void()+
    aes(fill = average)  +
    scale_fill_distiller(
      "Average % Tip",
-     palette = "",
-     limits = c(0.0, 80.0),
+     palette = "Spectral",
+     limits = c(min(taxi_w_tip$average), max(taxi_w_tip$average)),
      na.value="black"
-  )
+  )+
+  geom_sf_label(aes(label = boro_name), fill = "white")  
 
 tz
 ```
-
-
-```{r}
-#zooms to correct area but want it to be colored by burough
-library(leaflet)
-leaflet() %>%
-  addTiles() %>%
-  addPolygons(
-    data = taxi_zone_look,
-    fill = ~borough,
-  )%>%
-   setView(lng = -74, lat = 40.66, zoom = 10)
-```
-
 
 ## Analysis
 
@@ -184,7 +165,6 @@ What did you *learn* about the data set you explored?
 sds192::text_stats()
 ```
 
-
 ## Standards
 
 In this assignment, we attempted the following [standards](https://beanumber.github.io/sds192/standards.html):
@@ -192,16 +172,20 @@ In this assignment, we attempted the following [standards](https://beanumber.git
 - `r standard_button("query")`: We met the Query standard because we...
 - `r standard_button("github")`: We mastered the Github standard because we used Github to effectively collaborate and were able to resolve our merge conflicts.
 - `r standard_button("markdown")`: We mastered the R Markdown standard because we used markdown to structure our information, made sure only necessary content was displayed on the page, and employed a variety of web elements.
-<!-- - `r standard_button("function")`: We mastered the Function standard because we... -->
 - `r standard_button("wrangling")`: We mastered the Wrangling standard because we...
-<!-- - `r standard_button("iteration")`: We mastered the Iteration standard because we... -->
 - `r standard_button("relational")`: We mastered the Relational standard because we...
 - `r standard_button("aesthetics")`: We mastered the Aesthetics standard because we...
 - `r standard_button("context")`: We mastered the Context standard because we...
 - `r standard_button("ethics")`: We mastered the Ethics standard because we...
-<!-- - `r standard_button("reshape")`: We mastered the Reshape standard because we... -->
  - `r standard_button("spatial")`: We met the Spatial standard because we... 
- - `r standard_button("leaflet")`: We met the Leaflet standard because we...
 
+
+Please see the [SQL chapter of the `bookdown` book](
+https://rmarkdown.rstudio.com/authoring_knitr_engines.html%23sql#sql) for more information. 
+
+You can cite references using parentheses or not. @xie2016bookdown wrote about this. See also [@xie2016bookdown].
 
 ## References
+https://s3.amazonaws.com/nyc-tlc/misc/taxi+_zone_lookup.csv
+https://data.cityofnewyork.us/api/geospatial/tqmj-j8zm?method=export&format=Shapefile
+https://www.peoplesworld.org/article/the-decline-and-fall-of-the-nyc-taxi-industry/
